@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import Form from './components/Form/Form';
+import TodoList from './components/ToDoList/TodoList';
 
 function App() {
+  let [todoArray, setTodoArray] = useState([]);
+
+  const addTodo = (obj) => {
+    setTodoArray([...todoArray,obj])
+  }
+
+  const deleteTodo = (todoId) => {
+    setTodoArray(todoArray.filter(item => item.id !== todoId));
+  }
+
+  const updateTodoText = (newInputText, todoId) => {
+    // const freshTodo = todoArray.filter((item) => item.id === todoId)
+    // freshTodo[0].text = newInputText;
+    // console.log(...todoArray)
+    // setTodoArray([...todoArray])
+    const objIndex = todoArray.findIndex(item => item.id === todoId);
+    const todoArrayCopy = JSON.parse(JSON.stringify(todoArray));
+    todoArrayCopy[objIndex].text = newInputText;
+    setTodoArray(todoArrayCopy)
+  }
+  console.log('todoArray', todoArray)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Form addTodo={addTodo}/>
+
+      {todoArray.map(item => <TodoList todoObj={item} deleteTodo={deleteTodo} updateTodoText={updateTodoText}/>)}
     </div>
   );
 }
